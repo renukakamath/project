@@ -1,24 +1,323 @@
-{% load static %}
+
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>URL Shortener</title>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Shorten Your URL</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.original_url }}
-        <button type="submit">Shorten</button>
-    </form>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>Shorten Your URL</h1>
+                <p class="subtitle">Transform long URLs into clean, shareable links</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    {{ form.original_url }}
+                    <button type="submit">
+                        <span class="button-text">Shorten</span>
+                        <svg class="button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M13 7L18 12L13 17M6 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
 
-    {% if short_url %}
-        <div class="result">
-            <p>Short URL: <a href="{{ short_url }}">{{ short_url }}</a></p>
+            {% if short_url %}
+                <div class="result">
+                    <div class="result-label">Your shortened URL:</div>
+                    <div class="result-url">
+                        <a href="{{ short_url }}">{{ short_url }}</a>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ short_url }}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target.closest('.copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span style="color: #10B981;">✓</span>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+    </script>
+
+
+  
 </body>
 </html>
+
+
+<style>
+
+    * {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 20px;
+position: relative;
+overflow-x: hidden;
+}
+
+body::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: 
+radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+pointer-events: none;
+}
+
+.container {
+width: 100%;
+max-width: 600px;
+position: relative;
+z-index: 1;
+}
+
+.card {
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(20px);
+border-radius: 24px;
+padding: 48px 40px;
+box-shadow: 
+0 20px 25px -5px rgba(0, 0, 0, 0.1),
+0 10px 10px -5px rgba(0, 0, 0, 0.04),
+0 0 0 1px rgba(255, 255, 255, 0.2);
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header {
+text-align: center;
+margin-bottom: 40px;
+}
+
+h1 {
+font-size: 2.5rem;
+font-weight: 700;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 12px;
+letter-spacing: -0.02em;
+}
+
+.subtitle {
+color: #6b7280;
+font-size: 1.1rem;
+font-weight: 400;
+line-height: 1.5;
+}
+
+form {
+margin-bottom: 32px;
+}
+
+.input-group {
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+}
+
+input[type=url] {
+flex: 1;
+min-width: 280px;
+padding: 16px 20px;
+font-size: 16px;
+border: 2px solid #e5e7eb;
+border-radius: 16px;
+outline: none;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+background: #ffffff;
+font-family: inherit;
+}
+
+input[type=url]:focus {
+border-color: #667eea;
+box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+transform: translateY(-1px);
+}
+
+input[type=url]:hover {
+border-color: #d1d5db;
+}
+
+button[type=submit] {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 16px 32px;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+border: none;
+border-radius: 16px;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.3);
+position: relative;
+overflow: hidden;
+min-width: 140px;
+justify-content: center;
+}
+
+button[type=submit]:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.4);
+}
+
+button[type=submit]:active {
+transform: translateY(0);
+}
+
+button[type=submit]::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+transition: left 0.5s;
+}
+
+button[type=submit]:hover::before {
+left: 100%;
+}
+
+.button-icon {
+transition: transform 0.3s ease;
+}
+
+button[type=submit]:hover .button-icon {
+transform: translateX(2px);
+}
+
+.result {
+background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+border: 1px solid #bbf7d0;
+border-radius: 16px;
+padding: 24px;
+animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.result-label {
+color: #059669;
+font-weight: 600;
+margin-bottom: 12px;
+font-size: 14px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.result-url {
+display: flex;
+align-items: center;
+gap: 12px;
+background: white;
+border-radius: 12px;
+padding: 16px;
+border: 1px solid #d1fae5;
+}
+
+.result-url a {
+flex: 1;
+color: #667eea;
+text-decoration: none;
+font-weight: 500;
+font-size: 16px;
+word-break: break-all;
+}
+
+.result-url a:hover {
+text-decoration: underline;
+}
+
+.copy-btn {
+background: #f3f4f6;
+border: 1px solid #e5e7eb;
+border-radius: 8px;
+padding: 8px;
+cursor: pointer;
+transition: all 0.2s;
+color: #6b7280;
+flex-shrink: 0;
+}
+
+.copy-btn:hover {
+background: #e5e7eb;
+color: #374151;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+.card {
+padding: 32px 24px;
+margin: 16px;
+}
+
+h1 {
+font-size: 2rem;
+}
+
+.subtitle {
+font-size: 1rem;
+}
+
+.input-group {
+flex-direction: column;
+}
+
+input[type=url] {
+min-width: unset;
+}
+
+button[type=submit] {
+width: 100%;
+}
+}
+</style>
